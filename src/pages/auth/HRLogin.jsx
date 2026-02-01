@@ -17,7 +17,10 @@ import {
   Lock
 } from '@mui/icons-material'
 
+import { useNavigate } from 'react-router-dom'
+
 const HRLogin = () => {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -45,7 +48,7 @@ const HRLogin = () => {
       if (formData.email === 'hr@company.com' && formData.password === 'hr123') {
         setSuccess('Login successful! Redirecting to HR dashboard...')
         setTimeout(() => {
-          window.location.href = '/dashboard/hr'
+          navigate('/dashboard/hr')
         }, 1500)
       } else {
         setError('Invalid HR credentials. Please try again.')

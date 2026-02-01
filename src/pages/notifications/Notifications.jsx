@@ -38,7 +38,7 @@ import {
 import { useAuth } from '../../contexts/AuthContext'
 import { mockNotifications, mockUsers } from '../../services/mockData'
 
-const Notifications = () => {
+const NotificationsPage = () => {
   const { user } = useAuth()
   const [notifications, setNotifications] = useState([])
   const [filteredNotifications, setFilteredNotifications] = useState([])
@@ -413,4 +413,4 @@ const Notifications = () => {
   )
 }
 
-export default Notifications
+export default NotificationsPage

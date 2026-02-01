@@ -28,8 +28,10 @@ import {
   Assignment,
   CheckCircle,
   Warning,
-  Schedule
+  Schedule,
+  LocationOn
 } from '@mui/icons-material'
+import { useNavigate } from 'react-router-dom'
 import {
   LineChart,
   Line,
@@ -46,6 +48,7 @@ import {
 import { mockUsers, mockAttendance, mockReports } from '../../services/mockData'
 
 const HRDashboard = () => {
+  const navigate = useNavigate()
   const [stats, setStats] = useState({
     totalEmployees: 0,
     presentToday: 0,
@@ -325,30 +328,10 @@ const HRDashboard = () => {
               <Button
                 variant="contained"
                 fullWidth
-                startIcon={<AccessTime />}
-                onClick={() => window.location.href = '/hr/attendance'}
-              >
-                Manage Attendance
-              </Button>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <Button
-                variant="contained"
-                fullWidth
                 startIcon={<People />}
-                onClick={() => window.location.href = '/hr/employees'}
+                onClick={() => navigate('/admin/employees')}
               >
-                View Employees
-              </Button>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <Button
-                variant="contained"
-                fullWidth
-                startIcon={<TrendingUp />}
-                onClick={() => window.location.href = '/hr/analytics'}
-              >
-                Analytics
+                Manage Employees
               </Button>
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
@@ -356,9 +339,29 @@ const HRDashboard = () => {
                 variant="contained"
                 fullWidth
                 startIcon={<Assignment />}
-                onClick={() => window.location.href = '/hr/reports'}
+                onClick={() => navigate('/admin/services')}
               >
-                Generate Reports
+                View Services
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Button
+                variant="contained"
+                fullWidth
+                startIcon={<LocationOn />}
+                onClick={() => navigate('/location/live')}
+              >
+                Live Tracking
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Button
+                variant="contained"
+                fullWidth
+                startIcon={<TrendingUp />}
+                onClick={() => navigate('/admin/reports')}
+              >
+                View Reports
               </Button>
             </Grid>
           </Grid>

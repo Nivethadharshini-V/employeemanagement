@@ -28,6 +28,7 @@ import {
   TrendingUp
 } from '@mui/icons-material'
 import { useAuth } from '../../contexts/AuthContext'
+import { useNavigate } from 'react-router-dom'
 import { mockServices, mockAttendance, mockNotifications } from '../../services/mockData'
 
 const EmployeeDashboard = () => {
@@ -61,6 +62,8 @@ const EmployeeDashboard = () => {
 
     return () => clearInterval(timer)
   }, [user])
+
+  const navigate = useNavigate()
 
   const handleCheckIn = () => {
     // Simulate check-in
@@ -222,7 +225,7 @@ const EmployeeDashboard = () => {
                 variant="contained"
                 fullWidth
                 startIcon={<Assignment />}
-                onClick={() => window.location.href = '/employee/services'}
+                onClick={() => navigate('/employee/services')}
               >
                 View All Services
               </Button>
@@ -287,10 +290,10 @@ const EmployeeDashboard = () => {
                 ))}
               </List>
               {myServices.length > 3 && (
-                <Box textAlign="center" mt={2}>
+                  <Box textAlign="center" mt={2}>
                   <Button
                     variant="text"
-                    onClick={() => window.location.href = '/employee/services'}
+                    onClick={() => navigate('/employee/services')}
                   >
                     View All Services
                   </Button>
@@ -330,7 +333,7 @@ const EmployeeDashboard = () => {
               <Box textAlign="center" mt={2}>
                 <Button
                   variant="text"
-                  onClick={() => window.location.href = '/employee/notifications'}
+                  onClick={() => navigate('/employee/notifications')}
                 >
                   View All Notifications
                 </Button>
@@ -346,13 +349,13 @@ const EmployeeDashboard = () => {
           <Typography variant="h6" gutterBottom>
             Quick Actions
           </Typography>
-          <Grid container spacing={2}>
+                  <Grid container spacing={2}>
             <Grid item xs={12} sm={6} md={3}>
               <Button
                 variant="contained"
                 fullWidth
                 startIcon={<AccessTime />}
-                onClick={() => window.location.href = '/employee/attendance'}
+                onClick={() => navigate('/employee/attendance')}
               >
                 Attendance History
               </Button>
@@ -362,7 +365,7 @@ const EmployeeDashboard = () => {
                 variant="contained"
                 fullWidth
                 startIcon={<LocationOn />}
-                onClick={() => window.location.href = '/employee/location'}
+                onClick={() => navigate('/employee/location')}
               >
                 My Location
               </Button>
@@ -372,7 +375,7 @@ const EmployeeDashboard = () => {
                 variant="contained"
                 fullWidth
                 startIcon={<Assignment />}
-                onClick={() => window.location.href = '/employee/services'}
+                onClick={() => navigate('/employee/services')}
               >
                 My Services
               </Button>
@@ -382,7 +385,7 @@ const EmployeeDashboard = () => {
                 variant="contained"
                 fullWidth
                 startIcon={<TrendingUp />}
-                onClick={() => window.location.href = '/employee/profile'}
+                onClick={() => navigate('/employee/profile')}
               >
                 My Profile
               </Button>

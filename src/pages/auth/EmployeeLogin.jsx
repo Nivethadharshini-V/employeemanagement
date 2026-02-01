@@ -16,8 +16,10 @@ import {
   Work,
   Lock
 } from '@mui/icons-material'
+import { useNavigate } from 'react-router-dom'
 
 const EmployeeLogin = () => {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -45,7 +47,7 @@ const EmployeeLogin = () => {
       if (formData.email === 'mike@company.com' && formData.password === 'employee123') {
         setSuccess('Login successful! Redirecting to employee dashboard...')
         setTimeout(() => {
-          window.location.href = '/dashboard/employee'
+          navigate('/dashboard/employee')
         }, 1500)
       } else {
         setError('Invalid employee credentials. Please try again.')

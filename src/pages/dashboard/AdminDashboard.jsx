@@ -39,6 +39,7 @@ import {
   Pie,
   Cell
 } from 'recharts'
+import { useNavigate } from 'react-router-dom'
 import { mockUsers, mockServices, mockAttendance, mockReports } from '../../services/mockData'
 
 const AdminDashboard = () => {
@@ -347,45 +348,18 @@ const AdminDashboard = () => {
             Quick Actions
           </Typography>
           <Grid container spacing={2}>
+            {/** Use React Router navigate for client routing */}
             <Grid item xs={12} sm={6} md={3}>
-              <Button
-                variant="contained"
-                fullWidth
-                startIcon={<People />}
-                onClick={() => window.location.href = '/admin/employees'}
-              >
-                Manage Employees
-              </Button>
+              <ManageButton to="/admin/employees" startIcon={<People />} label="Manage Employees" />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
-              <Button
-                variant="contained"
-                fullWidth
-                startIcon={<Assignment />}
-                onClick={() => window.location.href = '/admin/services'}
-              >
-                View Services
-              </Button>
+              <ManageButton to="/admin/services" startIcon={<Assignment />} label="View Services" />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
-              <Button
-                variant="contained"
-                fullWidth
-                startIcon={<LocationOn />}
-                onClick={() => window.location.href = '/location/live'}
-              >
-                Live Tracking
-              </Button>
+              <ManageButton to="/location/live" startIcon={<LocationOn />} label="Live Tracking" />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
-              <Button
-                variant="contained"
-                fullWidth
-                startIcon={<TrendingUp />}
-                onClick={() => window.location.href = '/admin/reports'}
-              >
-                View Reports
-              </Button>
+              <ManageButton to="/admin/reports" startIcon={<TrendingUp />} label="View Reports" />
             </Grid>
           </Grid>
         </CardContent>
@@ -395,3 +369,18 @@ const AdminDashboard = () => {
 }
 
 export default AdminDashboard
+
+// small helper component placed at end of file to keep import list tidy
+function ManageButton({ to, startIcon, label }) {
+  const navigate = useNavigate()
+  return (
+    <Button
+      variant="contained"
+      fullWidth
+      startIcon={startIcon}
+      onClick={() => navigate(to)}
+    >
+      {label}
+    </Button>
+  )
+}

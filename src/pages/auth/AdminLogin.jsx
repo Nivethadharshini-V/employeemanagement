@@ -17,7 +17,10 @@ import {
   Lock
 } from '@mui/icons-material'
 
+import { useNavigate } from 'react-router-dom'
+
 const AdminLogin = () => {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -45,7 +48,7 @@ const AdminLogin = () => {
       if (formData.email === 'admin@company.com' && formData.password === 'admin123') {
         setSuccess('Login successful! Redirecting to admin dashboard...')
         setTimeout(() => {
-          window.location.href = '/dashboard/admin'
+          navigate('/dashboard/admin')
         }, 1500)
       } else {
         setError('Invalid admin credentials. Please try again.')

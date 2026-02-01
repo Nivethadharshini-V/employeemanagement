@@ -9,7 +9,9 @@ const initialState = {
   token: localStorage.getItem('token'),
   isAuthenticated: false,
   isLoading: true,
-  role: null
+  role: null,
+  sessionTimeout: null,
+  lastActivity: Date.now()
 }
 
 const authReducer = (state, action) => {
@@ -21,7 +23,9 @@ const authReducer = (state, action) => {
         token: action.payload.token,
         isAuthenticated: true,
         isLoading: false,
-        role: action.payload.user.role
+        role: action.payload.user.role,
+        sessionTimeout: action.payload.sessionTimeout,
+        lastActivity: Date.now()
       }
     case 'LOGIN_FAILURE':
       return {
@@ -30,7 +34,9 @@ const authReducer = (state, action) => {
         token: null,
         isAuthenticated: false,
         isLoading: false,
-        role: null
+        role: null,
+        sessionTimeout: null,
+        lastActivity: Date.now()
       }
     case 'LOGOUT':
       return {
@@ -39,7 +45,9 @@ const authReducer = (state, action) => {
         token: null,
         isAuthenticated: false,
         isLoading: false,
-        role: null
+        role: null,
+        sessionTimeout: null,
+        lastActivity: Date.now()
       }
     case 'SET_LOADING':
       return {
@@ -50,6 +58,22 @@ const authReducer = (state, action) => {
       return {
         ...state,
         user: { ...state.user, ...action.payload }
+      }
+    case 'UPDATE_ACTIVITY':
+      return {
+        ...state,
+        lastActivity: Date.now()
+      }
+    case 'SESSION_EXPIRED':
+      return {
+        ...state,
+        user: null,
+        token: null,
+        isAuthenticated: false,
+        isLoading: false,
+        role: null,
+        sessionTimeout: null,
+        lastActivity: Date.now()
       }
     default:
       return state

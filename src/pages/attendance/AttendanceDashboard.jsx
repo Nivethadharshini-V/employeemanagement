@@ -13,49 +13,42 @@ import {
   ListItemText,
   ListItemAvatar,
   LinearProgress,
-  Alert,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  InputAdornment
+  Alert
 } from '@mui/material'
 import {
   AccessTime,
   LocationOn,
   CheckCircle,
-  PlayArrow,
-  Stop,
   Schedule,
   TrendingUp,
   Assessment
 } from '@mui/icons-material'
 import { useAuth } from '../../contexts/AuthContext'
 import { mockAttendance, mockUsers } from '../../services/mockData'
+import { toast } from 'react-hot-toast'
 
 const AttendanceDashboard = () => {
   const { user } = useAuth()
   const [todayAttendance, setTodayAttendance] = useState(null)
   const [recentAttendance, setRecentAttendance] = useState([])
-  const [isCheckedIn, setIsCheckedIn] = useState(false)
-  const [currentTime, setCurrentTime] = useState(new Date())
-  const [checkInDialogOpen, setCheckInDialogOpen] = useState(false)
-  const [checkOutDialogOpen, setCheckOutDialogOpen] = useState(false)
-  const [location, setLocation] = useState('')
-  const [notes, setNotes] = useState('')
+  const currentTimeState = useState(new Date())
+  const [currentTime, setCurrentTime] = currentTimeState
 
   useEffect(() => {
     // Get today's attendance for current user
+    let storedAttendance = []
+    try {
+      storedAttendance = JSON.parse(localStorage.getItem('mockAttendance')) || []
+    } catch (e) {
+      storedAttendance = []
+    }
     const today = new Date().toISOString().split('T')[0]
-    const attendance = mockAttendance.find(a => 
-      a.employeeId === user?.id && a.date === today
-    )
+    const combined = [...storedAttendance, ...mockAttendance]
+    const attendance = combined.find(a => a.employeeId === user?.id && a.date === today)
     setTodayAttendance(attendance)
-    setIsCheckedIn(attendance && !attendance.checkOut)
 
-    // Get recent attendance history
-    const recent = mockAttendance
+    // Get recent attendance history (stored first)
+    const recent = combined
       .filter(a => a.employeeId === user?.id)
       .sort((a, b) => new Date(b.date) - new Date(a.date))
       .slice(0, 10)
@@ -69,50 +62,8 @@ const AttendanceDashboard = () => {
     return () => clearInterval(timer)
   }, [user])
 
-  const handleCheckIn = () => {
-    setCheckInDialogOpen(true)
-  }
-
-  const handleCheckOut = () => {
-    setCheckOutDialogOpen(true)
-  }
-
-  const confirmCheckIn = () => {
-    // Simulate check-in
-    const newAttendance = {
-      id: Date.now(),
-      employeeId: user.id,
-      employeeName: user.name,
-      date: new Date().toISOString().split('T')[0],
-      checkIn: currentTime.toLocaleTimeString(),
-      checkOut: null,
-      status: 'present',
-      workingHours: 0,
-      location: { lat: 40.7128, lng: -74.0060, address: location || 'Office Main Building' }
-    }
-    
-    setTodayAttendance(newAttendance)
-    setIsCheckedIn(true)
-    setCheckInDialogOpen(false)
-    setLocation('')
-    setNotes('')
-  }
-
-  const confirmCheckOut = () => {
-    // Simulate check-out
-    const checkInTime = new Date(`2000-01-01 ${todayAttendance.checkIn}`)
-    const checkOutTime = new Date(`2000-01-01 ${currentTime.toLocaleTimeString()}`)
-    const workingHours = ((checkOutTime - checkInTime) / (1000 * 60 * 60)).toFixed(2)
-    
-    setTodayAttendance(prev => ({
-      ...prev,
-      checkOut: currentTime.toLocaleTimeString(),
-      workingHours: parseFloat(workingHours)
-    }))
-    setIsCheckedIn(false)
-    setCheckOutDialogOpen(false)
-    setNotes('')
-  }
+  // derive checked-in state from today's attendance
+  const isCheckedIn = Boolean(todayAttendance && !todayAttendance.checkOut)
 
   const calculateMonthlyStats = () => {
     const currentMonth = new Date().getMonth()
@@ -211,31 +162,7 @@ const AttendanceDashboard = () => {
             </Grid>
           </Grid>
 
-          <Box mt={3}>
-            {!isCheckedIn ? (
-              <Button
-                variant="contained"
-                size="large"
-                startIcon={<PlayArrow />}
-                onClick={handleCheckIn}
-                disabled={!!todayAttendance?.checkOut}
-                fullWidth
-              >
-                Check In
-              </Button>
-            ) : (
-              <Button
-                variant="outlined"
-                size="large"
-                startIcon={<Stop />}
-                onClick={handleCheckOut}
-                color="error"
-                fullWidth
-              >
-                Check Out
-              </Button>
-            )}
-          </Box>
+          {/* Check-in/check-out removed */}
         </CardContent>
       </Card>
 
@@ -361,59 +288,7 @@ const AttendanceDashboard = () => {
         </CardContent>
       </Card>
 
-      {/* Check-in Dialog */}
-      <Dialog open={checkInDialogOpen} onClose={() => setCheckInDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Check In</DialogTitle>
-        <DialogContent>
-          <TextField
-            fullWidth
-            label="Location"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            margin="normal"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <LocationOn />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <TextField
-            fullWidth
-            label="Notes (Optional)"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            margin="normal"
-            multiline
-            rows={3}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setCheckInDialogOpen(false)}>Cancel</Button>
-          <Button onClick={confirmCheckIn} variant="contained">Check In</Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Check-out Dialog */}
-      <Dialog open={checkOutDialogOpen} onClose={() => setCheckOutDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Check Out</DialogTitle>
-        <DialogContent>
-          <TextField
-            fullWidth
-            label="Notes (Optional)"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            margin="normal"
-            multiline
-            rows={3}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setCheckOutDialogOpen(false)}>Cancel</Button>
-          <Button onClick={confirmCheckOut} variant="contained">Check Out</Button>
-        </DialogActions>
-      </Dialog>
+      {/* Check-in/check-out removed per request */}
     </Box>
   )
 }

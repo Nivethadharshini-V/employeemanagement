@@ -2,12 +2,20 @@ import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
-import WorkingDashboard from './WorkingDashboard'
+import { Toaster } from 'react-hot-toast'
+
+// Enhanced Components
+import WorkingDashboard from './components/WorkingDashboard'
+
+// Original Components
 import MyTasks from './pages/employee/MyTasks'
 import CheckInOutSimple from './pages/employee/CheckInOutSimple'
 import MyLocation from './pages/employee/MyLocation'
 import MyProfileSimple from './pages/employee/MyProfileSimple'
 import ManageEmployees from './pages/admin/ManageEmployees'
+import EmployeeList from './pages/employees/EmployeeList'
+import EmployeeForm from './pages/employees/EmployeeForm'
+import EmployeeProfile from './pages/employees/EmployeeProfile'
 
 // Auth Pages
 import LoginPortal from './pages/auth/LoginPortal'
@@ -29,6 +37,12 @@ import Analytics from './pages/hr/Analytics'
 import SystemReports from './pages/admin/SystemReports'
 import SystemSettings from './pages/admin/SystemSettings'
 import UserManagement from './pages/admin/UserManagement'
+import ServiceList from './pages/services/ServiceList'
+import ServiceForm from './pages/services/ServiceForm'
+import ServiceDetails from './pages/services/ServiceDetails'
+import LiveLocation from './pages/location/LiveLocation'
+import NotificationsPage from './pages/notifications/Notifications'
+import AttendanceDashboard from './pages/attendance/AttendanceDashboard'
 
 const theme = createTheme({
   palette: {
@@ -38,6 +52,48 @@ const theme = createTheme({
     secondary: {
       main: '#dc004e',
     },
+    success: {
+      main: '#4caf50',
+    },
+    warning: {
+      main: '#ff9800',
+    },
+    error: {
+      main: '#f44336',
+    },
+    info: {
+      main: '#2196f3',
+    },
+  },
+  typography: {
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    h4: {
+      fontWeight: 600,
+    },
+    h5: {
+      fontWeight: 600,
+    },
+    h6: {
+      fontWeight: 600,
+    },
+  },
+  components: {
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          borderRadius: 12,
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          borderRadius: 8,
+        },
+      },
+    },
   },
 })
 
@@ -45,6 +101,22 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            background: '#363636',
+            color: '#fff',
+          },
+          success: {
+            duration: 3000,
+          },
+          error: {
+            duration: 5000,
+          },
+        }}
+      />
       <Routes>
         {/* Auth Routes */}
         <Route path="/login" element={<LoginPortal />} />
@@ -60,17 +132,29 @@ function App() {
         <Route path="/signup/hr" element={<HRSignup />} />
         <Route path="/signup/employee" element={<EmployeeSignup />} />
         
-        {/* Dashboard Routes */}
+        {/* Test Route */}
+        <Route path="/test" element={<div style={{padding: '20px', fontSize: '24px'}}>✅ Test Route Working!</div>} />
+        
+        {/* Working Dashboard Route */}
         <Route path="/dashboard/:role" element={<WorkingDashboard />} />
+        
+        {/* Original Dashboard Routes (fallback) */}
+        <Route path="/dashboard-original/:role" element={<WorkingDashboard />} />
         
         {/* Employee Routes */}
         <Route path="/employee/mytasks" element={<MyTasks />} />
         <Route path="/employee/checkinout" element={<CheckInOutSimple />} />
         <Route path="/employee/mylocation" element={<MyLocation />} />
         <Route path="/employee/myprofile" element={<MyProfileSimple />} />
+        {/* Aliases so quick-action paths work */}
+        <Route path="/employee/location" element={<MyLocation />} />
+        <Route path="/employee/profile" element={<MyProfileSimple />} />
         
         {/* Admin Routes */}
         <Route path="/admin/manage-employees" element={<ManageEmployees />} />
+        <Route path="/admin/employees" element={<EmployeeList />} />
+        <Route path="/admin/services" element={<ServiceList />} />
+        <Route path="/admin/reports" element={<SystemReports />} />
         <Route path="/admin/system-reports" element={<SystemReports />} />
         <Route path="/admin/system-settings" element={<SystemSettings />} />
         <Route path="/admin/user-management" element={<UserManagement />} />
@@ -80,6 +164,42 @@ function App() {
         <Route path="/hr/attendance-reports" element={<AttendanceReports />} />
         <Route path="/hr/performance" element={<Performance />} />
         <Route path="/hr/analytics" element={<Analytics />} />
+        
+        {/* Service Management Routes */}
+        <Route path="/services" element={<ServiceList />} />
+        <Route path="/services/create" element={<div>Create Service Request - Coming Soon</div>} />
+        <Route path="/services/:id" element={<ServiceDetails />} />
+
+        {/* Admin employee/service CRUD routes */}
+        <Route path="/admin/employees/new" element={<EmployeeForm />} />
+        <Route path="/admin/employees/edit/:id" element={<EmployeeForm />} />
+        <Route path="/employees/:id" element={<EmployeeProfile />} />
+        <Route path="/admin/services/new" element={<ServiceForm />} />
+        <Route path="/admin/services/edit/:id" element={<ServiceForm />} />
+        
+        {/* Location Tracking Routes */}
+        <Route path="/location/tracking" element={<LiveLocation />} />
+        <Route path="/location/live" element={<LiveLocation />} />
+        <Route path="/location/history" element={<div>Location History - Coming Soon</div>} />
+        <Route path="/location/geofence" element={<div>Geo-fence Management - Coming Soon</div>} />
+        
+        {/* Notification Routes */}
+        <Route path="/notifications" element={<NotificationsPage />} />
+        <Route path="/notifications/settings" element={<div>Notification Settings - Coming Soon</div>} />
+        <Route path="/employee/notifications" element={<NotificationsPage />} />
+
+        {/* Employee Services & Attendance */}
+        <Route path="/employee/services" element={<ServiceList />} />
+        <Route path="/employee/attendance" element={<AttendanceDashboard />} />
+        
+        {/* Report Routes */}
+        <Route path="/reports/attendance" element={<div>Attendance Reports - Coming Soon</div>} />
+        <Route path="/reports/performance" element={<div>Performance Reports - Coming Soon</div>} />
+        <Route path="/reports/financial" element={<div>Financial Reports - Coming Soon</div>} />
+        <Route path="/reports/export" element={<div>Export Reports - Coming Soon</div>} />
+        
+        {/* API Documentation Route */}
+        <Route path="/api/docs" element={<div>API Documentation - Coming Soon</div>} />
         
         {/* Home Route */}
         <Route path="/" element={<LoginPortal />} />
